@@ -7,40 +7,38 @@ GO
 USE [product];
 GO
 
-CREATE TABLE category (
-	Id INT NOT NULL IDENTITY PRIMARY KEY,
-	Name TEXT NOT NULL,
-	Description TEXT NOT NULL,
-);
-GO
 
 CREATE TABLE person (
 	Id INT NOT NULL IDENTITY,
-    Username VARCHAR(40) UNIQUE NOT NULL,
-    Password TEXT NOT NULL,
+  Username VARCHAR(40) UNIQUE NOT NULL,
+  Password TEXT NOT NULL,
 	Name TEXT NOT NULL,
 	Role TEXT NOT NULL,
 	PRIMARY KEY (Id)
 );
 GO
 
-CREATE TABLE product (
-	Id INT PRIMARY KEY NOT NULL IDENTITY,
+CREATE TABLE category (
+	Id INT NOT NULL IDENTITY,
 	Name TEXT NOT NULL,
 	Description TEXT NOT NULL,
-    Price DECIMAL Not NULL,
-    Category_Id INT FOREIGN KEY REFERENCES category(Id),
-    Created_By INT FOREIGN KEY REFERENCES person(Id)
+	Created_By INT FOREIGN KEY REFERENCES person(Id),
+	PRIMARY KEY (Id)
 );
 GO
 
-
-INSERT INTO [category] (Name, Description)
-VALUES
-('reading', 'all things related to reading'),
-('household devices', 'all things related to household devices')
+CREATE TABLE product (
+	Id INT NOT NULL IDENTITY,
+	Name TEXT NOT NULL,
+	Description TEXT NOT NULL,
+	Price DECIMAL Not NULL,
+	Category_Id INT FOREIGN KEY REFERENCES category(Id),
+	Created_By INT FOREIGN KEY REFERENCES person(Id),
+	Created_at DATETIME NOT NULL,
+	IsArchived BIT, 
+	PRIMARY KEY (Id)
+);
 GO
-
 
 INSERT INTO [person] (Username, Password, Name, Role)
 VALUES 
@@ -49,10 +47,15 @@ VALUES
 ('customer', 'customer', 'customer', 'customer')
 GO
 
+INSERT INTO [category] (Name, Description, Created_By)
+VALUES
+('reading', 'all things related to reading', 1),
+('household devices', 'all things related to household devices', 1)
+GO
 
-INSERT INTO [product] (Name, Description, Price, Category_Id, Created_By)
+INSERT INTO [product] (Name, Description, Price, Category_Id, Created_By, Created_at, IsArchived)
 VALUES 
-('Air Conditioner', 'A high quality Air conditioner', 1499.9, 1, 1),
-('Fan', 'high quality fan', 149.99, 1,1),
-('Book', 'high quality book', 19.99, 1,1) 
+('Air Conditioner', 'A high quality Air conditioner', 1499.9, 1, 1, "2021-05-02T22:10:10", 0),
+('Fan', 'high quality fan', 149.99, 1,1, "2021-05-02T22:10:10", 0),
+('Book', 'high quality book', 19.99, 1,1, "2021-05-02T22:10:10", 1) 
 GO

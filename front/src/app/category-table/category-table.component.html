@@ -1,0 +1,32 @@
+<div class="mx-auto mt-10">
+  <div class="bg-gray-900">
+    <input id="search-input" [(ngModel)]="search" (keyup.enter)="onEnterPress()" placeholder="search">
+    <button id="search-btn" (click)="onEnterPress()">search</button>
+  </div>
+  <table class="table-auto mx-auto mt-10 rounded-lg shadow-lg border-separate">
+    <thead class="bg-gray-800 text-gray-300">
+      <tr>
+        <th class="rounded-l-lg text-left px-8 py-3">Title</th>
+        <th class="text-left px-8 py-3">Description</th>
+        <th class="rounded-r-lg text-left px-8 py-3">Created By</th>
+      </tr>
+    </thead>
+    <tbody class="bg-gray-300 text-gray-800">
+      <tr>
+        <td>Entertainment</td>
+        <td>Intro to CSS</td>
+        <td>Adam</td>
+      </tr>
+      <tr>
+        <td>Entertainment</td>
+        <td>Intro to CSS</td>
+        <td>Adam</td>
+      </tr>
+      <tr>
+        <td>Entertainment</td>
+        <td>Intro to CSS</td>
+        <td>Adam</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
