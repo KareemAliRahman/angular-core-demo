@@ -50,7 +50,12 @@ GO
 INSERT INTO [category] (Name, Description, Created_By)
 VALUES
 ('reading', 'all things related to reading', 1),
-('household devices', 'all things related to household devices', 1)
+('household devices', 'all things related to household devices', 1),
+('household devices1', 'all things related to household devices', 1),
+('household devices2', 'all things related to household devices', 1),
+('household devices3', 'all things related to household devices', 1),
+('household devices4', 'all things related to household devices', 1),
+('household devices5', 'all things related to household devices', 1)
 GO
 
 INSERT INTO [product] (Name, Description, Price, Category_Id, Created_By, Created_at, IsArchived)

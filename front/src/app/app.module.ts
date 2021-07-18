@@ -6,17 +6,19 @@ import { AppComponent } from './app.component';
 import { HerosComponent } from './heros/heros.component';
 import { CategoryTableComponent } from './category-table/category-table.component';
 import { ProductTableComponent } from './product-table/product-table.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
     AppComponent,
     HerosComponent,
     CategoryTableComponent,
-    ProductTableComponent
+    ProductTableComponent,
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
