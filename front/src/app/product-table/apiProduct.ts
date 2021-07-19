@@ -5,6 +5,6 @@ export interface ApiProduct{
   price: number,
   createdBy: number,
   categoryId: number,
-  createdAt: Date,
+  createdAt: string,
   isArchived: boolean
 }

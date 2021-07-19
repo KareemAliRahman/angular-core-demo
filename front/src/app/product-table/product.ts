@@ -7,7 +7,7 @@ export interface Product{
   created_by_id: number;
   category_name: string;
   created_by_name: string;
-  created_at: Date;
+  created_at: string;
   is_archived: boolean;
   chosen_to_be_archived: boolean;
   being_edited: boolean;

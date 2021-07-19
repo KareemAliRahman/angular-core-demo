@@ -23,8 +23,8 @@
       <button class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:text-gray-800 hover:bg-gray-300 font-semibold shadow-xl" id="search-btn" (click)="search()">search</button>
     </ng-container>
     <ng-container *ngIf="searchOption==='created_at'">
-      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl ml-10" id="search-input" [(ngModel)]="startDate" placeholder="start date"> 
-      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl ml-10" id="search-input" [(ngModel)]="endDate" placeholder="end date"> 
+      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl ml-10" id="startDate-input" [(ngModel)]="startDate" placeholder="start-date MM-DD-YYYY"> 
+      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl ml-10" id="endDate-input" [(ngModel)]="endDate" placeholder="end-date MM-DD-YYYY"> 
       <button class="ml-10 px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:text-gray-800 hover:bg-gray-300 font-semibold shadow-xl" id="search-btn" (click)="search()">search</button>
     </ng-container>
   </div>
@@ -89,13 +89,15 @@
             {{product.created_by_name}}
           </td>
           <td>
-            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.category_name" placeholder="{{product.category_name}}">
+          <select [(ngModel)]="editedProduct.category_id">
+            <option *ngFor="let cat of categories" value="{{cat.id}}">{{cat.name}}</option>
+          </select>
           </td>
           <td>
             <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.price" placeholder="{{product.price}}">
           </td>
           <td>
-            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.created_at" placeholder="{{product.created_at}}">
+            {{product.created_at}}
           </td>
           <td>
             {{product.is_archived? true: false}}

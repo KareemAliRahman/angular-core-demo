@@ -81,8 +81,10 @@ export class CategoryTableComponent implements OnInit {
         console.log(this.categories);
       },
       err => {
-        console.log("error");
         console.log(err);
+        if(err.status !=201){
+          this.errorMessage = "Error creating new Category"
+        }
       }
 
     );
@@ -105,8 +107,10 @@ export class CategoryTableComponent implements OnInit {
         console.log(this.categories);
       },
       err => {
-        console.log("error");
         console.log(err);
+        if(err.status !=201){
+          this.errorMessage = "Error updating Category"
+        }
       }
     );
   }
