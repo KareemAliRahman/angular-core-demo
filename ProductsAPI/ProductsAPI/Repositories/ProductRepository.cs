@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ProductsAPI.Models;
+using ProductsAPI.ApiView;
 
 namespace ProductsAPI.Repositories
 {
@@ -29,21 +30,50 @@ namespace ProductsAPI.Repositories
         return;
     }
 
-    public async Task<IEnumerable<Product>> Get()
+    public async Task<IEnumerable<ProductView>> Get()
     {
-      return await _context.Products.ToListAsync();
+            //return await _context.Products.ToListAsync();
+            return await _context.Products.Select(p => new ProductView
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Created_by_id = p.CreatedBy,
+                Created_by_name = _context.People.Where(per => per.Id == p.CreatedBy).Select(per => per.Name).SingleOrDefault(),
+                Category_id = p.CategoryId,
+                category_name = _context.Categories.Where(c => c.Id == p.CategoryId).Select(c => c.Name).SingleOrDefault(),
+                Is_archived = p.IsArchived,
+                Created_at = p.CreatedAt
+            }).ToListAsync();
     }
 
-    public async Task<Product> Get(int id)
+    public async Task<ProductView> Get(int id)
     {
-      return await _context.Products.FindAsync(id);
-    }
+        //return await _context.Products.FindAsync(id);
+        return await _context.Products
+            .Where(p => p.Id == id)
+            .Select(p => new ProductView
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Created_by_id = p.CreatedBy,
+                Created_by_name = _context.People.Where(per => per.Id == p.CreatedBy).Select(per => per.Name).SingleOrDefault(),
+                Category_id = p.CategoryId,
+                category_name = _context.Categories.Where(c => c.Id == p.CategoryId).Select(c => c.Name).SingleOrDefault(),
+                Is_archived = p.IsArchived,
+                Created_at = p.CreatedAt
+            }).FirstAsync();
+        }
 
 
-    public async Task update(Product product)
+    public async Task<Product> update(Product product)
     {
       _context.Entry(product).State = EntityState.Modified;
       await _context.SaveChangesAsync();
+      return product;
     }
 
     public async Task archive(int id){

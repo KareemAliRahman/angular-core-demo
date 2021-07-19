@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ProductsAPI.Repositories;
 using ProductsAPI.Models;
+using ProductsAPI.ApiView;
 
 namespace ProductsAPI.Controllers
 {
@@ -20,20 +21,55 @@ namespace ProductsAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Product>> GetProducts(){
+        public async Task<IEnumerable<ProductView>> GetProducts(){
             return await _productRepository.Get();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id){
+        public async Task<ActionResult<ProductView>> GetProduct(int id){
             return await _productRepository.Get(id);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product){
-            var newProduct = await _productRepository.create(product);
-            return CreatedAtAction(nameof(GetProduct), new {id = newProduct.Id}, newProduct);
+
+
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteCategory(int id)
+        {
+            try
+            {
+                
+                await _productRepository.delete(id);
+                return StatusCode(StatusCodes.Status200OK, $"Product with id {id} was deleted successfully");
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting data");
+            }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
+        {
+            var newProduct = await _productRepository.create(product);
+            return CreatedAtAction(nameof(GetProduct), new { id = newProduct.Id }, newProduct);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Product>> PutProduct([FromBody] Product product)
+        {
+            try
+            {
+                Product newProduct = await _productRepository.update(product);
+                return CreatedAtAction(nameof(GetProduct), new { id = newProduct.Id }, newProduct);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
+            }
+        }
+
 
     }
 }

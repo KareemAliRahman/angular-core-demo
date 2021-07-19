@@ -1,0 +1,139 @@
+
+<div class="flex flex-col justify-center">
+  <div *ngIf="errorMessage" role="alert">
+    <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+      Danger
+    </div>
+    <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+      <p>{{errorMessage}}</p>
+    </div>
+  </div>
+  <div class="mt-10 mx-20 flex justify-start">
+    <select [(ngModel)]="searchOption" name="search options" id="option" class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:text-gray-800 hover:bg-gray-300 font-semibold shadow-xl">
+      <option value="name">name</option>
+      <option value="description">description</option>
+      <option value="created_by_name">created by</option>
+      <option value="category_name">category name</option>
+      <option value="price">price</option>
+      <option value="is_archived">is archived</option>
+      <option value="created_at">created at</option>
+    </select>
+    <ng-container *ngIf="searchOption!=='created_at'">
+      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl mx-10" id="search-input" [(ngModel)]="searchTerm" placeholder="search"> 
+      <button class="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:text-gray-800 hover:bg-gray-300 font-semibold shadow-xl" id="search-btn" (click)="search()">search</button>
+    </ng-container>
+    <ng-container *ngIf="searchOption==='created_at'">
+      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl ml-10" id="search-input" [(ngModel)]="startDate" placeholder="start date"> 
+      <input class="bg-gray-300 px-1 rounded-lg border-2 shadow-xl ml-10" id="search-input" [(ngModel)]="endDate" placeholder="end date"> 
+      <button class="ml-10 px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:text-gray-800 hover:bg-gray-300 font-semibold shadow-xl" id="search-btn" (click)="search()">search</button>
+    </ng-container>
+  </div>
+  <table class="mx-20 table-auto mt-5 rounded-lg shadow-lg border-separate flex-grow-0">
+    <thead class="bg-gray-800 text-gray-300">
+      <tr>
+        <th class="rounded-l-lg py-2"></th>
+        <th class="text-left px-2 py-2">name</th>
+        <th class="text-left px-2 py-2">description</th>
+        <th class="text-left px-2 py-2">created by</th>
+        <th class="text-left px-2 py-2">category name</th>
+        <th class="text-left px-2 py-2">price</th>
+        <th class="text-left px-2 py-2">created at</th>
+        <th class="text-left px-2 py-2">is archived</th>
+        <th class="py-2">archive</th>
+        <th class="rounded-r-lg py-2"></th>
+      </tr>
+    </thead>
+    <tbody class="bg-gray-300 text-gray-800">
+      <tr *ngFor="let product of products">
+        <ng-container *ngIf="product.shown && !product.being_edited">
+          <td>
+            <button class="px-1 py-1 rounded-lg bg-blue-800 text-gray-300 hover:text-blue-800 hover:bg-gray-300 font-semibold shadow-xl" id="edit-btn" (click)="startEditProduct(product)">edit</button>
+          </td>
+          <td>
+            {{product.name}} 
+          </td>
+          <td>
+            {{product.description}}
+          </td>
+          <td>
+            {{product.created_by_name}}
+          </td>
+          <td>
+            {{product.category_name}}
+          </td>
+          <td>
+            {{product.price}}
+          </td>
+          <td>
+            {{product.created_at}}
+          </td>
+          <td>
+            {{product.is_archived? true: false}}
+          </td>
+          <td><input type="checkbox"/></td>
+          <td>
+            <button class="px-1 py-1 rounded-lg bg-red-800 text-gray-300 hover:text-red-800 hover:bg-gray-300 font-semibold shadow-xl" id="delete-btn" (click)="deleteProduct(product.id)">delete</button>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="product.shown && product.being_edited">
+          <td>
+            <button class="px-1 py-1 rounded-lg bg-blue-800 text-gray-300 hover:text-blue-800 hover:bg-gray-300 font-semibold shadow-xl" id="edit-btn" (click)="editProduct(product)">save</button>
+          </td>
+          <td>
+            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.name" placeholder="{{product.name}}">
+          </td>
+          <td>
+            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.description" placeholder="{{product.description}}">
+          </td>
+          <td>
+            {{product.created_by_name}}
+          </td>
+          <td>
+            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.category_name" placeholder="{{product.category_name}}">
+          </td>
+          <td>
+            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.price" placeholder="{{product.price}}">
+          </td>
+          <td>
+            <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="editedProduct.created_at" placeholder="{{product.created_at}}">
+          </td>
+          <td>
+            {{product.is_archived? true: false}}
+          </td>
+          <td></td>
+          <td>
+            <button class="px-1 py-1 rounded-lg bg-red-800 text-gray-300 hover:text-red-800 hover:bg-gray-300 font-semibold shadow-xl" id="delete-btn" (click)="deleteProduct(product.id)">delete</button>
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td>
+          <button class="px-2 py-1 rounded-lg bg-green-800 text-gray-300 hover:text-green-800 hover:bg-gray-300 font-semibold shadow-xl" id="add-btn" (click)="saveNewProduct()">add</button>
+        </td>
+        <td>
+          <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newTitle-input" [(ngModel)]="newProduct.name" placeholder="new title">
+        </td> 
+        <td>
+          <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newDesc-input" [(ngModel)]="newProduct.description" placeholder="new Description">
+        </td> 
+        <td>By Me</td> 
+        <td>
+          <select [(ngModel)]="newProduct.category_id">
+            <option *ngFor="let cat of categories" value="{{cat.id}}">{{cat.name}}</option>
+          </select>
+        </td>
+        <td>
+          <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newDesc-input" [(ngModel)]="newProduct.price" placeholder="price">
+        </td>
+        <td>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="px-20 mt-5 flex flex-row-reverse">
+    <button class="mr-10 px-4 py-2 rounded-lg bg-red-500 text-gray-300 hover:text-red-500 hover:bg-gray-300 font-semibold shadow-xl" id="archive-btn">archive</button>
+  </div>
+</div>

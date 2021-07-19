@@ -22,7 +22,7 @@ CREATE TABLE category (
 	Id INT NOT NULL IDENTITY,
 	Name TEXT NOT NULL,
 	Description TEXT NOT NULL,
-	Created_By INT FOREIGN KEY REFERENCES person(Id),
+	Created_By INT NOT NULL FOREIGN KEY REFERENCES person(Id),
 	PRIMARY KEY (Id)
 );
 GO
@@ -31,11 +31,11 @@ CREATE TABLE product (
 	Id INT NOT NULL IDENTITY,
 	Name TEXT NOT NULL,
 	Description TEXT NOT NULL,
-	Price DECIMAL Not NULL,
-	Category_Id INT FOREIGN KEY REFERENCES category(Id),
-	Created_By INT FOREIGN KEY REFERENCES person(Id),
+	Price MONEY Not NULL,
+	Category_Id INT NOT NULL FOREIGN KEY REFERENCES category(Id),
+	Created_By INT NOT NULL FOREIGN KEY REFERENCES person(Id),
 	Created_at DATETIME NOT NULL,
-	IsArchived BIT, 
+	IsArchived BIT NOT NULL, 
 	PRIMARY KEY (Id)
 );
 GO
