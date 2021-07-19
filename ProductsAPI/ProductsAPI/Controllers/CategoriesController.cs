@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using ProductsAPI.Models;
 using ProductsAPI.Repositories;
 using ProductsAPI.ApiView;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProductsAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -27,6 +29,7 @@ namespace ProductsAPI.Controllers
             return await _categoryRepository.Get();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryView>> GetCategory(int id)
         {

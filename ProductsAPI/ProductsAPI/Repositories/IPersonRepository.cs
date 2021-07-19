@@ -11,5 +11,7 @@ namespace ProductsAPI.Repositories
       Task<Person> create(Person person);
 
       Task<Person> Get(int id);
+
+        Task<Person> Get(string username, string password);
     }
 }
