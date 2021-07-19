@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ThrowStmt } from '@angular/compiler';
 import { ɵCompiler_compileModuleAndAllComponentsAsync__POST_R3__ } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
+import { of } from 'rxjs';
 import { Category } from '../category-table/category';
 import { ApiProduct } from './apiProduct';
 import { Product } from './product';
@@ -13,7 +14,7 @@ type ProductSearchOption = 'name' | 'description' | 'price' | 'category_name' | 
   styleUrls: ['./product-table.component.css']
 })
 export class ProductTableComponent implements OnInit {
-  products?: Product[];
+  products: Product[];
   categories: Category[];
   newProduct: Product;
   editedProduct: Product;
@@ -28,6 +29,7 @@ export class ProductTableComponent implements OnInit {
 
   constructor(private http: HttpClient) { 
     this.categories = [];
+    this.products = [];
     this.newProduct = {id: 0, name: '', description: '', price: 0.0, category_id:0, created_by_id: 0,
             category_name: '', created_by_name :'', created_at: String(new Date()), is_archived: false, 
             chosen_to_be_archived: false, being_edited: false, shown: true};
@@ -159,6 +161,7 @@ export class ProductTableComponent implements OnInit {
   }
 
   startEditProduct(prod: Product): void{
+    this.errorMessage = '';
     this.editedProduct = prod;
     this.products = this.products?.map<Product>((p: Product) :Product => {
       if(prod.id === p.id){
@@ -171,6 +174,7 @@ export class ProductTableComponent implements OnInit {
   }
 
   search(): void{
+    this.errorMessage = '';
     this.products = this.products?.map<Product>( (p: Product): Product => {
       p.shown = true; 
       p.being_edited = false; 
@@ -212,5 +216,38 @@ export class ProductTableComponent implements OnInit {
     });
   }
 
+  archiveProducts():void{
+    this.errorMessage = '';
+    var archivedProductsIds: number[] = [];
+    for(let p of this.products){
+      if(p.chosen_to_be_archived)archivedProductsIds.push(p.id);
+    }
+    this.http.patch<number[]>('https://localhost:44365/api/Products', archivedProductsIds).subscribe(
+      res=>{
+        // this.products = this.products.map<Product>( (p: Product): Product => {
+        //   for (let i = 0; i < archivedProductsIds.length; i++) {
+        //     const e = archivedProductsIds[i];
+        //     if(p.id == e) p.is_archived = true;
+        //     break;
+        //   }
+        //   return p;
+        // });
+        for(let i of archivedProductsIds){
+          for( let p of this.products){
+            if(p.id == i){
+              p.chosen_to_be_archived = false;
+              p.is_archived = true;
+            }
+          }
+        }
+      },
+      err =>{
+        console.log(err);
+        this.errorMessage = "Error archiving products";
+      }
+
+    )
+
+  }
 
 }

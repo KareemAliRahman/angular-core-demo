@@ -70,7 +70,7 @@
           <td>
             {{product.is_archived? true: false}}
           </td>
-          <td><input type="checkbox"/></td>
+          <td><input *ngIf="!product.is_archived" type="checkbox" [(ngModel)]="product.chosen_to_be_archived"/></td>
           <td>
             <button class="px-1 py-1 rounded-lg bg-red-800 text-gray-300 hover:text-red-800 hover:bg-gray-300 font-semibold shadow-xl" id="delete-btn" (click)="deleteProduct(product.id)">delete</button>
           </td>
@@ -136,6 +136,6 @@
     </tbody>
   </table>
   <div class="px-20 mt-5 flex flex-row-reverse">
-    <button class="mr-10 px-4 py-2 rounded-lg bg-red-500 text-gray-300 hover:text-red-500 hover:bg-gray-300 font-semibold shadow-xl" id="archive-btn">archive</button>
+    <button class="mr-10 px-4 py-2 rounded-lg bg-red-500 text-gray-300 hover:text-red-500 hover:bg-gray-300 font-semibold shadow-xl" id="archive-btn" (click)="archiveProducts()">archive</button>
   </div>
 </div>

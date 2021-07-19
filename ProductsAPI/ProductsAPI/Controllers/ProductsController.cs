@@ -69,7 +69,23 @@ namespace ProductsAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
             }
         }
-
+        
+        [HttpPatch]
+        public async Task<ActionResult> PatchProducts([FromBody] int[] productIds)
+        {
+            try
+            {
+                for(int i=0; i<productIds.Length; i++)
+                {
+                    await _productRepository.archive(productIds[i]);
+                }
+                return StatusCode(StatusCodes.Status204NoContent, "successfully archived products");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error archiving products");
+            }
+        }
 
     }
 }
