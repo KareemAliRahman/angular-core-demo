@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ProductsAPI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -22,20 +21,21 @@ namespace ProductsAPI.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<CategoryView>> GetCategories()
         {
             return await _categoryRepository.Get();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin,manager")]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryView>> GetCategory(int id)
         {
             return await _categoryRepository.Get(id);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory([FromBody] Category category)
         {
@@ -43,7 +43,7 @@ namespace ProductsAPI.Controllers
             return CreatedAtAction(nameof(GetCategory), new { id = newCategory.Id }, newCategory);
         }
 
-
+        [Authorize(Roles = "admin")]
         [HttpPut]
         public async Task<ActionResult> PutCategory([FromBody] Category category)
         {
@@ -60,7 +60,7 @@ namespace ProductsAPI.Controllers
             
         }
 
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCategory(int id)
         {

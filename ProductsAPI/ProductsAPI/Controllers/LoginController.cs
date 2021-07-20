@@ -35,7 +35,7 @@ namespace ProductsAPI.Controllers
             var token = _jwtAuthenticationManager.Authenticate(userCred.Username, userCred.Password, person.Role);
             if (token == null)
                 return Unauthorized();
-            return Ok(token);
+            return Ok(new { jwt= token, expiresIn = 1*24*60*60,username = person.Username, role = person.Role});
         }
     }
 }

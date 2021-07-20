@@ -8,6 +8,6 @@ namespace ProductsAPI
 {
     public interface IJwtAuthenticationManager
     {
-        string Authenticate(string username, string password, UserRole role);
+        string Authenticate(string username, string password, string role);
     }
 }

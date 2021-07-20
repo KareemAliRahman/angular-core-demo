@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ProductsAPI.Repositories;
 using ProductsAPI.Models;
 using ProductsAPI.ApiView;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProductsAPI.Controllers
 {
@@ -20,19 +21,19 @@ namespace ProductsAPI.Controllers
             _productRepository = productRepository;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<ProductView>> GetProducts(){
             return await _productRepository.Get();
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductView>> GetProduct(int id){
             return await _productRepository.Get(id);
         }
 
-
-
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCategory(int id)
         {
@@ -49,6 +50,7 @@ namespace ProductsAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "admin,manager")]
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
         {
@@ -56,6 +58,7 @@ namespace ProductsAPI.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = newProduct.Id }, newProduct);
         }
 
+        [Authorize(Roles = "admin,manager")]
         [HttpPut]
         public async Task<ActionResult<Product>> PutProduct([FromBody] Product product)
         {
@@ -69,7 +72,8 @@ namespace ProductsAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
             }
         }
-        
+
+        [Authorize(Roles = "admin")]
         [HttpPatch]
         public async Task<ActionResult> PatchProducts([FromBody] int[] productIds)
         {

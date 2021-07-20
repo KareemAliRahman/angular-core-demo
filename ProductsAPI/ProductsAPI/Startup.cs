@@ -16,6 +16,8 @@ using ProductsAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ProductsAPI
 {
@@ -50,11 +52,18 @@ namespace ProductsAPI
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
                     ValidateIssuer = false,
+                    ValidateLifetime = true,
                     ValidateAudience = false
                 };
             });
             services.AddSingleton<IJwtAuthenticationManager>(new JwtAuthenticationManager(key));
-
+            //services.AddAuthorization(auth =>
+            //{
+            //    auth.AddPolicy("roleBased", new AuthorizationPolicyBuilder()
+            //    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            //    .RequireClaim(ClaimTypes.Role, new string[] { "admin", "manager", "customer" })
+            //    .Build());
+            //});
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductsAPI", Version = "v1" });

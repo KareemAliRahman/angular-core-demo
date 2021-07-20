@@ -20,7 +20,7 @@ namespace ProductsAPI
             key = _key;
         }
 
-        public string Authenticate(string username, string password, UserRole role)
+        public string Authenticate(string username, string password, string role)
         {
             
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -29,9 +29,10 @@ namespace ProductsAPI
             {
                 Subject = new ClaimsIdentity(new Claim[] {
                     new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, "Admin")
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
+                //Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
                     SecurityAlgorithms.HmacSha256Signature)
