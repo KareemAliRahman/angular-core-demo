@@ -5,7 +5,7 @@ do
     psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='product'"
     if [ $? -eq 0 ]
     then
-        if [ "$( psql -tAc "SELECT 1 FROM pg_database WHERE datname='DB_NAME'" )" = '1' ]
+        if [ "$( psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='DB_NAME'" )" = '1' ]
         then
             echo "Database already exists"
             break
