@@ -7,14 +7,12 @@ import { CategoryTableComponent } from './category-table/category-table.componen
 import { ProductTableComponent } from './product-table/product-table.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoryTableComponent,
     ProductTableComponent,
-    LoginComponent
   ],
   imports: [
     BrowserModule,
