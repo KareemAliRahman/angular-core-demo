@@ -20,17 +20,27 @@
   <table class="mx-20 table-auto mt-5 rounded-lg shadow-lg border-separate flex-grow-0">
     <thead class="bg-gray-800 text-gray-300">
       <tr>
-        <th class="rounded-l-lg py-2"></th>
-        <th class="text-left px-8 py-2">Title</th>
+        <ng-container *ngIf="(this.user?.role == 'admin');else notAdmin">
+          <th class="rounded-l-lg py-2"></th>
+          <th class="text-left px-8 py-2">Title</th>
+        </ng-container>
+        <ng-template #notAdmin>
+          <th class="rounded-l-lg text-left px-8 py-2">Title</th>
+        </ng-template>
         <th class="text-left px-8 py-2">Description</th>
-        <th class="text-left px-8 py-2">Created By</th>
-        <th class="rounded-r-lg py-2"></th>
+        <ng-container *ngIf="this.user?.role == 'admin'; else notAdminDel">
+          <th class="text-left px-8 py-2">Created By</th>
+          <th class="rounded-r-lg py-2"></th>
+        </ng-container>
+        <ng-template #notAdminDel>
+          <th class="rounded-r-lg text-left px-8 py-2">Created By</th>
+        </ng-template>
       </tr>
     </thead>
     <tbody class="bg-gray-300 text-gray-800">
       <tr *ngFor="let category of categories">
         <ng-container *ngIf="category.shown && !category.beingEdited">
-          <td>
+          <td *ngIf="this.user?.role == 'admin'">
             <button class="px-1 py-1 rounded-lg bg-blue-800 text-gray-300 hover:text-blue-800 hover:bg-gray-300 font-semibold shadow-xl" id="edit-btn" (click)="startEditCategory(category)">edit</button>
           </td>
           <td>
@@ -42,7 +52,7 @@
           <td>
             {{category.createdByName}}
           </td>
-          <td>
+          <td *ngIf="this.user?.role == 'admin'">
             <button class="px-1 py-1 rounded-lg bg-red-800 text-gray-300 hover:text-red-800 hover:bg-gray-300 font-semibold shadow-xl" id="delete-btn" (click)="deleteCategory(category.id)">delete</button>
           </td>
         </ng-container>
@@ -64,7 +74,7 @@
           </td>
         </ng-container>
       </tr>
-      <tr>
+      <tr *ngIf="this.user?.role == 'admin'">
         <td>
           <button class="px-2 py-1 rounded-lg bg-green-800 text-gray-300 hover:text-green-800 hover:bg-gray-300 font-semibold shadow-xl" id="add-btn" (click)="saveNewCategory()">add</button>
         </td>

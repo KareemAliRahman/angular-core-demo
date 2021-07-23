@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { ThrowStmt } from '@angular/compiler';
-import { ɵCompiler_compileModuleAndAllComponentsAsync__POST_R3__ } from '@angular/core';
+import { Input, ɵCompiler_compileModuleAndAllComponentsAsync__POST_R3__ } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { of } from 'rxjs';
 import { Category } from '../category-table/category';
+import { User } from '../user';
 import { ApiProduct } from './apiProduct';
 import { Product } from './product';
 
