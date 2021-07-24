@@ -1,4 +1,3 @@
-
 <div class="flex flex-col justify-center">
   <div *ngIf="errorMessage" role="alert">
     <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
@@ -31,22 +30,40 @@
   <table class="mx-20 table-auto mt-5 rounded-lg shadow-lg border-separate flex-grow-0">
     <thead class="bg-gray-800 text-gray-300">
       <tr>
-        <th class="rounded-l-lg py-2"></th>
-        <th class="text-left px-2 py-2">name</th>
+        <ng-container *ngIf="(this.user?.role == 'admin' || this.user?.role == 'manager');else notAdminOrManager">
+          <th class="rounded-l-lg py-2"></th>
+          <th class="text-left px-2 py-2">name</th>
+        </ng-container>
+        <ng-template #notAdminOrManager>
+          <th class="rounded-l-lg text-left px-2 py-2">name</th>
+        </ng-template>
         <th class="text-left px-2 py-2">description</th>
         <th class="text-left px-2 py-2">created by</th>
         <th class="text-left px-2 py-2">category name</th>
         <th class="text-left px-2 py-2">price</th>
         <th class="text-left px-2 py-2">created at</th>
-        <th class="text-left px-2 py-2">is archived</th>
-        <th class="py-2">archive</th>
-        <th class="rounded-r-lg py-2"></th>
+        <ng-container *ngIf="user?.role == 'admin'">
+          <th class="text-left px-2 py-2">is archived</th>
+          <th class="py-2">archive</th>
+          <th class="rounded-r-lg py-2"></th>
+        </ng-container>
+        <ng-container *ngIf="!(this.user?.role == 'admin')">
+          <th class="rounded-r-lg text-left px-2 py-2">is archived</th>
+        </ng-container>
+        <!-- <ng-template *ngIf="user?.role == 'admin';else notAdminTail">
+          <th class="text-left px-2 py-2">is archived</th>
+          <th class="py-2">archive</th>
+          <th class="rounded-r-lg py-2"></th>
+        </ng-template>
+        <ng-template #notAdminTail>
+          <th class="rounded-r-lg text-left px-2 py-2">is archived</th>
+        </ng-template> -->
       </tr>
     </thead>
     <tbody class="bg-gray-300 text-gray-800">
       <tr *ngFor="let product of products">
         <ng-container *ngIf="product.shown && !product.being_edited">
-          <td>
+          <td *ngIf="this.user?.role == 'admin' || this.user?.role == 'manager'">
             <button class="px-1 py-1 rounded-lg bg-blue-800 text-gray-300 hover:text-blue-800 hover:bg-gray-300 font-semibold shadow-xl" id="edit-btn" (click)="startEditProduct(product)">edit</button>
           </td>
           <td>
@@ -70,13 +87,13 @@
           <td>
             {{product.is_archived? true: false}}
           </td>
-          <td><input *ngIf="!product.is_archived" type="checkbox" [(ngModel)]="product.chosen_to_be_archived"/></td>
-          <td>
+          <td *ngIf="this.user?.role == 'admin'"><input *ngIf="!product.is_archived" type="checkbox" [(ngModel)]="product.chosen_to_be_archived"/></td>
+          <td *ngIf="this.user?.role == 'admin'">
             <button class="px-1 py-1 rounded-lg bg-red-800 text-gray-300 hover:text-red-800 hover:bg-gray-300 font-semibold shadow-xl" id="delete-btn" (click)="deleteProduct(product.id)">delete</button>
           </td>
         </ng-container>
         <ng-container *ngIf="product.shown && product.being_edited">
-          <td>
+          <td *ngIf="this.user?.role == 'admin' || this.user?.role == 'manager'">
             <button class="px-1 py-1 rounded-lg bg-blue-800 text-gray-300 hover:text-blue-800 hover:bg-gray-300 font-semibold shadow-xl" id="edit-btn" (click)="editProduct(product)">save</button>
           </td>
           <td>
@@ -102,13 +119,13 @@
           <td>
             {{product.is_archived? true: false}}
           </td>
-          <td></td>
-          <td>
+          <td *ngIf="this.user?.role == 'admin'"></td>
+          <td *ngIf="this.user?.role == 'admin'">
             <button class="px-1 py-1 rounded-lg bg-red-800 text-gray-300 hover:text-red-800 hover:bg-gray-300 font-semibold shadow-xl" id="delete-btn" (click)="deleteProduct(product.id)">delete</button>
           </td>
         </ng-container>
       </tr>
-      <tr>
+      <tr *ngIf="this.user?.role == 'admin' || this.user?.role == 'manager'">
         <td>
           <button class="px-2 py-1 rounded-lg bg-green-800 text-gray-300 hover:text-green-800 hover:bg-gray-300 font-semibold shadow-xl" id="add-btn" (click)="saveNewProduct()">add</button>
         </td>
@@ -125,17 +142,17 @@
           </select>
         </td>
         <td>
-          <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newDesc-input" [(ngModel)]="newProduct.price" placeholder="price">
+          <input class="px-1 bg-gray-300 border-2 shadow-xl" id="newPrice-input" [(ngModel)]="newProduct.price" placeholder="price">
         </td>
         <td>
         </td>
         <td></td>
-        <td></td>
-        <td></td>
+        <td *ngIf="this.user?.role == 'admin'"></td>
+        <td *ngIf="this.user?.role == 'admin'"></td>
       </tr>
     </tbody>
   </table>
-  <div class="px-20 mt-5 flex flex-row-reverse">
+  <div *ngIf="this.user?.role == 'admin'" class="px-20 mt-5 flex flex-row-reverse">
     <button class="mr-10 px-4 py-2 rounded-lg bg-red-500 text-gray-300 hover:text-red-500 hover:bg-gray-300 font-semibold shadow-xl" id="archive-btn" (click)="archiveProducts()">archive</button>
   </div>
 </div>

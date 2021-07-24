@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { ThrowStmt } from '@angular/compiler';
-import { ɵCompiler_compileModuleAndAllComponentsAsync__POST_R3__ } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { of } from 'rxjs';
+import { AuthService } from '../auth.service';
 import { Category } from '../category-table/category';
+import { User } from '../user';
 import { ApiProduct } from './apiProduct';
 import { Product } from './product';
 
@@ -14,31 +13,27 @@ type ProductSearchOption = 'name' | 'description' | 'price' | 'category_name' | 
   styleUrls: ['./product-table.component.css']
 })
 export class ProductTableComponent implements OnInit {
+  user: User | null;
   products: Product[];
   categories: Category[];
   newProduct: Product;
   editedProduct: Product;
   errorMessage?: string;
-  userName: string;
-  userId: number;
   edit: boolean;
   searchTerm: string;
   searchOption: ProductSearchOption;
   startDate: string;
   endDate: string;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private authService: AuthService) { 
+    this.user = this.authService.getSession();
+    console.log(this.user);
     this.categories = [];
     this.products = [];
     this.newProduct = {id: 0, name: '', description: '', price: 0.0, category_id:0, created_by_id: 0,
             category_name: '', created_by_name :'', created_at: String(new Date()), is_archived: false, 
             chosen_to_be_archived: false, being_edited: false, shown: true};
-    // this.editedProduct = {id: 0, name: '', description: '', price: 0.0, category_id:0, created_by_id: 0,
-    //         category_name: '', created_by_name :'', created_at: new Date(), is_archived: false, 
-    //         chosen_to_be_archived: false, being_edited: false, shown: true};
     this.editedProduct = this.newProduct;
-    this.userName = 'admin';
-    this.userId = 1;
     this.edit = false;
     this.searchTerm = '';
     this.startDate = '';
@@ -52,14 +47,14 @@ export class ProductTableComponent implements OnInit {
 
   getProducts(){
     this.errorMessage = '';
-    this.http.get<Product[]>("https://localhost:44365/api/Products").subscribe(
+    this.http.get<Product[]>("https://localhost:44365/api/Products", {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       prods => {
         console.log(prods);
         this.products = prods;
         this.products.map(p => {p.being_edited = false; p.shown = true, p.chosen_to_be_archived = false});
       }
     );
-    this.http.get<Category[]>("https://localhost:44365/api/Categories").subscribe(
+    this.http.get<Category[]>("https://localhost:44365/api/Categories", {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       cats => {
         console.log(cats);
         this.categories = cats;
@@ -70,7 +65,7 @@ export class ProductTableComponent implements OnInit {
   deleteProduct(id: number){
     this.errorMessage = '';
     console.log(`will delete product with id ${id}`);
-    this.http.delete(`https://localhost:44365/api/Products/${id}`, {responseType: 'text',observe: 'response'}).subscribe(
+    this.http.delete(`https://localhost:44365/api/Products/${id}`, {headers: {'Authorization': `Bearer ${this.user?.jwt}`}, responseType: 'text',observe: 'response'}).subscribe(
       res =>{
         this.products = this.products?.filter(e => e.id !== id);
 
@@ -94,16 +89,16 @@ export class ProductTableComponent implements OnInit {
       "name" :  this.newProduct.name,
       "description" : this.newProduct.description,
       "price": this.newProduct.price,
-      "createdBy": this.userId,
+      "createdBy": this.user? this.user.id: 0,
       "categoryId": this.newProduct.category_id,
       "createdAt": new Date().toISOString(),
       "isArchived": false
     }
     console.log(JSON.stringify(newProd));
-    this.http.post<ApiProduct>('https://localhost:44365/api/Products', newProd).subscribe(
+    this.http.post<ApiProduct>('https://localhost:44365/api/Products', newProd, {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       res =>{
         const {id, name, description, price, categoryId, createdBy, createdAt, isArchived} = res;
-        const prod: Product = {id: id, name: name, description: description, created_by_id: this.userId, created_by_name: this.userName,
+        const prod: Product = {id: id, name: name, description: description, created_by_id: createdBy, created_by_name: this.user? this.user.username: '',
                               category_id: this.newProduct.category_id, category_name: this.newProduct.category_name, price: price, 
                               created_at: createdAt, is_archived: isArchived, chosen_to_be_archived: false, shown: true, being_edited:false};
         this.products?.push(prod);
@@ -126,7 +121,7 @@ export class ProductTableComponent implements OnInit {
       "name" :  this.editedProduct.name? this.editedProduct.name : prod.name,
       "description" : this.editedProduct.description? this.editedProduct.description : prod.description,
       "price": this.editedProduct.price? this.editedProduct.price : prod.price,
-      "createdBy": this.userId,
+      "createdBy": this.user? this.user.id: 0,
       "categoryId": this.editedProduct.category_id? this.editedProduct.category_id : prod.category_id, 
       "createdAt": prod.created_at,
       "isArchived": prod.is_archived
@@ -137,7 +132,7 @@ export class ProductTableComponent implements OnInit {
         this.editedProduct.category_name = e.name;
       }
     }
-    this.http.put<ApiProduct>('https://localhost:44365/api/Products', editedProd).subscribe(
+    this.http.put<ApiProduct>('https://localhost:44365/api/Products', editedProd, {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       res =>{
         const {id, name, description, price, categoryId, createdBy, createdAt, isArchived} = res;
         const eprod: Product = {id: id, name: name, description: description, created_by_id: prod.created_by_id, created_by_name: prod.created_by_name,
@@ -222,16 +217,8 @@ export class ProductTableComponent implements OnInit {
     for(let p of this.products){
       if(p.chosen_to_be_archived)archivedProductsIds.push(p.id);
     }
-    this.http.patch<number[]>('https://localhost:44365/api/Products', archivedProductsIds).subscribe(
+    this.http.patch<number[]>('https://localhost:44365/api/Products', archivedProductsIds, {headers:{'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       res=>{
-        // this.products = this.products.map<Product>( (p: Product): Product => {
-        //   for (let i = 0; i < archivedProductsIds.length; i++) {
-        //     const e = archivedProductsIds[i];
-        //     if(p.id == e) p.is_archived = true;
-        //     break;
-        //   }
-        //   return p;
-        // });
         for(let i of archivedProductsIds){
           for( let p of this.products){
             if(p.id == i){
@@ -247,7 +234,5 @@ export class ProductTableComponent implements OnInit {
       }
 
     )
-
   }
-
 }
