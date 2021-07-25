@@ -3,6 +3,7 @@ import { Category } from './category';
 import {HttpClient} from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { User } from '../user';
+import { environment } from 'src/environments/environment';
 
 type SearchOption = 'name' | 'description' | 'created by';
 
@@ -22,6 +23,7 @@ export class CategoryTableComponent implements OnInit {
   edit: boolean;
   searchTerm: string;
   searchOption: SearchOption;
+  private API_URL = environment.API_URL;
 
   constructor(private http: HttpClient, private authService: AuthService) { 
     this.user = this.authService.getSession();
@@ -36,7 +38,7 @@ export class CategoryTableComponent implements OnInit {
 
   getCategories(){
     this.errorMessage = '';
-    this.http.get<Category[]>("http://localhost:44365/api/Categories", {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
+    this.http.get<Category[]>(`${this.API_URL}/api/Categories`, {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       cats => {
         console.log(cats);
         this.categories = cats;
@@ -48,7 +50,7 @@ export class CategoryTableComponent implements OnInit {
   deleteCategory(id: number){
     this.errorMessage = '';
     console.log(`will delete category with id ${id}`);
-    this.http.delete(`http://localhost:44365/api/Categories/${id}`, 
+    this.http.delete(`${this.API_URL}/api/Categories/${id}`, 
     { headers: {'Authorization': `Bearer ${this.user?.jwt}`},responseType: 'text',observe: 'response'})
     .subscribe(
       res =>{
@@ -73,7 +75,7 @@ export class CategoryTableComponent implements OnInit {
       "description" : this.newDesc,
       "createdBy": this.user?.id
     }
-    this.http.post<Category>('http://localhost:44365/api/Categories', newCat ,{headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
+    this.http.post<Category>(`${this.API_URL}/api/Categories`, newCat ,{headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       res =>{
         const {id, name, description} = res;
         const cat: Category = {id: id, name: name, description: description, createdByName: this.user? this.user.username: '', beingEdited:false, shown:true};
@@ -93,7 +95,7 @@ export class CategoryTableComponent implements OnInit {
   editCategory(cat: Category): void{
     this.errorMessage = '';
     var editCat = {id: cat.id, name: this.editTitle, description: this.editDesc , createdBy: this.user?.id};
-    this.http.put<Category>('http://localhost:44365/api/Categories', editCat, {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
+    this.http.put<Category>(`${this.API_URL}/api/Categories`, editCat, {headers: {'Authorization': `Bearer ${this.user?.jwt}`}}).subscribe(
       res =>{
         console.log(res);
         const {id, name, description} = res;

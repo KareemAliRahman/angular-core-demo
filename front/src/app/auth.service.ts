@@ -4,6 +4,7 @@ import { conditionallyCreateMapObjectLiteral } from '@angular/compiler/src/rende
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import {  throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { User } from './user';
 
 @Injectable({
@@ -11,12 +12,15 @@ import { User } from './user';
 })
 export class AuthService{
 
-   constructor(private http: HttpClient) {
+    
+    private API_URL = environment.API_URL;
+
+    constructor(private http: HttpClient) {
 
     }
 
     login(username:string, password:string ) {
-        return this.http.post<User>('http://localhost:44365/api/login/authenticate', {username, password});
+        return this.http.post<User>(`${this.API_URL}/api/login/authenticate`, {username, password});
     }
 
     getUserName(){
