@@ -19,6 +19,6 @@ services:
   front:
     build: ./front
     ports:
-      - 4200:4200
+      - 4200:80
     depends_on:
       - api
