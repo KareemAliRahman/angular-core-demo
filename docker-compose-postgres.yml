@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  postdb:
+  db:
     build: ./postdb
     environment: 
       - POSTGRES_PASSWORD=postgres
@@ -14,7 +14,7 @@ services:
     ports:
       - 44365:44365
     depends_on:
-      - postdb
+      - db
   front:
     build: ./front
     ports:

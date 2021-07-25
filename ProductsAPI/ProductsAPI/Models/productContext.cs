@@ -31,11 +31,11 @@ namespace ProductsAPI.Models
             {
                 if(_configuration["DATABASE"] == "mssql")
                 {
-                    optionsBuilder.UseSqlServer("Server=localhost,1433;Database=product;User Id=SA;Password=Passw0rd");
+                    optionsBuilder.UseSqlServer("Server=db,1433;Database=product;User Id=SA;Password=Passw0rd");
                 }
                 else
                 {
-                    optionsBuilder.UseNpgsql("User ID=postgres;Password=postgres;Host=localhost;Port=5432;Database=product;");
+                    optionsBuilder.UseNpgsql("User ID=postgres;Password=postgres;Host=db;Port=5432;Database=product;");
                 }
             }
         }
