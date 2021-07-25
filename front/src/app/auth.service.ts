@@ -16,7 +16,7 @@ export class AuthService{
     }
 
     login(username:string, password:string ) {
-        return this.http.post<User>('https://localhost:44365/api/login/authenticate', {username, password});
+        return this.http.post<User>('http://localhost:44365/api/login/authenticate', {username, password});
     }
 
     getUserName(){

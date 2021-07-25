@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  postdb:
+    build: ./postdb
+    environment: 
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+  api:
+    build: ./ProductsAPI
+    environment: 
+      - DATABASE=postgres
+    ports:
+      - 44365:44365
+    depends_on:
+      - postdb
+  front:
+    build: ./front
+    ports:
+      - 4200:4200
+    depends_on:
+      - api

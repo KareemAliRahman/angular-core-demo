@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:43512",
-      "sslPort": 44365
+      "applicationUrl": "http://localhost:44365",
+      "sslPort": 0
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -13,6 +13,8 @@
       "commandName": "IISExpress",
       "launchUrl": "swagger",
       "environmentVariables": {
+        "Key": "Value",
+        "DATABASE": "postgres",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

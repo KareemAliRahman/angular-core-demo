@@ -85,7 +85,7 @@ namespace ProductsAPI
                 app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
